@@ -1,50 +1,33 @@
 package demo.controller;
 
-import demo.service.AdsService;
-import demo.service.CustomerSupportService;
-import demo.service.MultiplayerService;
+import org.json.JSONObject;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.RequestBuilder;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import java.util.HashMap;
+import java.util.Map;
 
-@ExtendWith(SpringExtension.class)
-@WebMvcTest(ServicesController.class)
+import static com.fasterxml.jackson.databind.type.LogicalType.Map;
+
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class ServicesControllerIntegrationTest {
 
-    @Autowired
-    private MockMvc mockMvc;
-    private MultiplayerService multiplayerService;
-    private CustomerSupportService customerSupportService;
-    private AdsService adsService;
-
-    public ServicesControllerIntegrationTest(MultiplayerService multiplayerService,
-                                             CustomerSupportService customerSupportService,
-                                             AdsService adsService) {
-        this.multiplayerService = multiplayerService;
-        this.customerSupportService = customerSupportService;
-        this.adsService = adsService;
-    }
-
-
-    String path = "api/v1/services";
+    @Value("${local.server.port}") int port;
 
     @Test
-    void test(@RequestParam String timeZone,
-              @RequestParam String userId,
-              @RequestParam String countryCode) throws Exception {
-        RequestBuilder request = MockMvcRequestBuilders.get(path + "/status")
-                .param("timeZone", "GMT").param("userId", "2").param("countryCode", "USA");
-        MvcResult result = mockMvc.perform(request).andReturn();
-        assertEquals("Yo", result.getResponse().getContentAsString());
+    @Disabled
+    void canReturnStatusOfServices() throws Exception {
+    // Not working
+
+        TestRestTemplate restTemplate = new TestRestTemplate();
+        ResponseEntity<String> response = restTemplate.getForEntity("http://localhost:" + port + "api/v1/services/status", String.class);
+
+        System.out.println(response.getBody());
 
     }
 

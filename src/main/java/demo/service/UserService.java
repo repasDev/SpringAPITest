@@ -30,27 +30,37 @@ public class UserService {
         return user.getJson().toString();
     }
 
-    public void addNewUser(User user) {
+    public String addNewUser(User user) {
         checkIfNameTaken(user);
         userRepository.save(user);
+        return user.getJson().toString();
     }
 
-    public void deleteUser(Long userId) {
+    public String deleteUser(Long userId) {
         checkIfUserExists(userId);
         userRepository.deleteById(userId);
+        return "Deleted user with id:" + userId;
     }
 
     @Transactional
-    public void updateUser(Long userId, String userName) {
+    public String updateUser(Long userId, String userName) {
         checkIfUserExists(userId);
         User user = userRepository.getById(userId);
-        checkIfUsernameValid(userName, user);
-        checkIfNameTaken(user);
+        checkIfUsernameValid(userName);
+        checkIfNameTaken(userName);
         user.setUserName(userName);
+        userRepository.save(user);
+        return user.getJson().toString();
     }
 
     public void checkIfNameTaken(User user) {
         Optional<User> userOptional = userRepository.findUserByUserName(user.getUserName());
+        if (userOptional.isPresent()) {
+            throw new IllegalStateException("Username taken");
+        }
+    }
+    public void checkIfNameTaken(String userName) {
+        Optional<User> userOptional = userRepository.findUserByUserName(userName);
         if (userOptional.isPresent()) {
             throw new IllegalStateException("Username taken");
         }
@@ -65,8 +75,8 @@ public class UserService {
         }
     }
 
-    public void checkIfUsernameValid(String userName, User user) {
-        if (userName == null || userName.length() < 1 || !Objects.equals(user.getUserName(), userName)) {
+    public void checkIfUsernameValid(String userName) {
+        if (userName == null || userName.length() < 1) {
             throw new IllegalStateException("Invalid name");
         }
     }

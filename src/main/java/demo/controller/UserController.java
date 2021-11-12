@@ -2,6 +2,7 @@ package demo.controller;
 
 import demo.model.User;
 import demo.service.UserService;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,30 +18,34 @@ public class UserController {
     }
 
     @GetMapping
+    @ResponseStatus(code = HttpStatus.FOUND)
     public List<User> getUsers() {
         return userService.getUsers();
     }
 
-
     @GetMapping(path = "{userId}", produces = "application/json")
+    @ResponseStatus(code = HttpStatus.FOUND)
     public String getUser(@PathVariable("userId") Long userId) {
         return userService.getUser(userId);
     }
 
-    @PostMapping
-    public void registerNewUser(@RequestBody User user) {
-        userService.addNewUser(user);
+    @PostMapping(produces = "application/json")
+    @ResponseStatus(code = HttpStatus.CREATED)
+    public String registerNewUser(@RequestBody User user) {
+        return userService.addNewUser(user);
     }
 
     @DeleteMapping(path = "{userId}")
-    public void deleteUser(@PathVariable("userId") Long userId) {
+    @ResponseStatus(code = HttpStatus.OK)
+    public String deleteUser(@PathVariable("userId") Long userId) {
         // Check if null
-        userService.deleteUser(userId);
+        return userService.deleteUser(userId);
     }
 
-    @PutMapping(path = "{userId}")
-    public void updateUser(@PathVariable("userId") Long userId,
-                           @RequestParam(required = false) String userName) {
-        userService.updateUser(userId, userName);
+    @PutMapping(path = "{userId}", produces = "application/json")
+    @ResponseStatus(code = HttpStatus.OK)
+    public String updateUser(@PathVariable("userId") Long userId,
+                           @RequestParam String userName) {
+        return userService.updateUser(userId, userName);
     }
 }

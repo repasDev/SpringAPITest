@@ -30,6 +30,10 @@ public class User {
     public User() {
     }
 
+    public User(String userName) {
+        this.userName = userName;
+    }
+
     public User(Long id, String userName, TimeZone timeZone, String countryCode, Long timesPlayed) {
         this.id = id;
         this.userName = userName;

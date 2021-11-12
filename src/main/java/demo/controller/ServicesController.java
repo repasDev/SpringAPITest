@@ -1,5 +1,6 @@
 package demo.controller;
 
+import com.github.tsohr.JSONObject;
 import demo.service.AdsService;
 import demo.service.CustomerSupportService;
 import demo.service.MultiplayerService;
@@ -32,8 +33,8 @@ public class ServicesController {
         this.adsService = adsService;
     }
 
-    @GetMapping(path = "status")
-    public ResponseEntity<Object> checkServicesStatus(@RequestParam String timeZone,
+    @GetMapping(path = "status", produces = "application/json")
+    public String checkServicesStatus(@RequestParam String timeZone,
                                                       @RequestParam String userId,
                                                       @RequestParam String countryCode) throws IOException {
 
@@ -42,11 +43,11 @@ public class ServicesController {
         boolean ads = adsService.getStatus(countryCode);
 
         // Construct response
-        Map<String, Object> map = new HashMap<String, Object>();
-        map.put("multiplayer", multiplayer);
-        map.put("customer-support", customerSupport);
-        map.put("ads", ads);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("multiplayer", multiplayer);
+        jsonObject.put("customer-support", customerSupport);
+        jsonObject.put("ads", ads);
 
-        return new ResponseEntity<Object>(map, HttpStatus.OK);
+        return jsonObject.toString();
     }
 }

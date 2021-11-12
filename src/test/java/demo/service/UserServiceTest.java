@@ -123,7 +123,7 @@ class UserServiceTest {
         String userName = "";
 
         // then
-        assertThatThrownBy(() -> userService.checkIfUsernameValid(userName, user))
+        assertThatThrownBy(() -> userService.checkIfUsernameValid(userName))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessageContaining("Invalid name");
     }
@@ -134,21 +134,11 @@ class UserServiceTest {
         String userName = null;
 
         // then
-        assertThatThrownBy(() -> userService.checkIfUsernameValid(userName, user))
+        assertThatThrownBy(() -> userService.checkIfUsernameValid(userName))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessageContaining("Invalid name");
     }
 
-    @Test
-    void willThrowIfUserNameStringsAreNotEqual() {
-        // given
-        String userName = "John";
-
-        // then
-        assertThatThrownBy(() -> userService.checkIfUsernameValid(userName, user))
-                .isInstanceOf(IllegalStateException.class)
-                .hasMessageContaining("Invalid name");
-    }
 
     @Test
     void willNotThrowIfUserNameValid() {
@@ -156,7 +146,7 @@ class UserServiceTest {
         String userName = "JackOne";
 
         // then
-        assertThatCode(() -> userService.checkIfUsernameValid(userName, user)).doesNotThrowAnyException();
+        assertThatCode(() -> userService.checkIfUsernameValid(userName)).doesNotThrowAnyException();
     }
 
 
